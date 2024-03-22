@@ -41,6 +41,12 @@ public @interface ConfigItem
 
 	String description();
 
+	String title() default "";
+
+	String hide() default "";
+
+	String unhide() default "";
+
 	boolean hidden() default false;
 
 	String warning() default "";

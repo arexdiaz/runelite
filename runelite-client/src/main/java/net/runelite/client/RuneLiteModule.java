@@ -34,6 +34,9 @@ import com.google.inject.name.Names;
 import com.google.inject.util.Providers;
 import java.applet.Applet;
 import java.io.File;
+import java.util.concurrent.*;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.openosrs.client.config.OpenOSRSConfig;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -230,5 +233,28 @@ public class RuneLiteModule extends AbstractModule
 		@Named("runelite.api.base") HttpUrl apiBase)
 	{
 		return disableTelemetry ? null : new TelemetryClient(okHttpClient, gson, apiBase);
+	}
+	@Provides
+	@Singleton
+	OpenOSRSConfig provideOpenOSRSConfig(ConfigManager configManager)
+	{
+		return configManager.getConfig(OpenOSRSConfig.class);
+	}
+
+	@Provides
+	@Singleton
+	ExecutorService provideExecutorService()
+	{
+		int poolSize = 2 * Runtime.getRuntime().availableProcessors();
+
+		// Will start up to poolSize threads (because of allowCoreThreadTimeOut) as necessary, and times out
+		// unused threads after 1 minute
+		ThreadPoolExecutor executor = new ThreadPoolExecutor(poolSize, poolSize,
+				60L, TimeUnit.SECONDS,
+				new LinkedBlockingQueue<>(),
+				new ThreadFactoryBuilder().setNameFormat("worker-%d").build());
+		executor.allowCoreThreadTimeOut(true);
+
+		return new NonScheduledExecutorServiceExceptionLogger(executor);
 	}
 }

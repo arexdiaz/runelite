@@ -46,6 +46,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -152,6 +153,46 @@ public class PluginManager
 				}
 			}
 		});
+	}
+
+	private static <T> void incrementChildren(Graph<T> graph, Map<T, Integer> dependencyCount, T n, int val)
+	{
+		if (!dependencyCount.containsKey(n) || dependencyCount.get(n) < val)
+		{
+			dependencyCount.put(n, val);
+			graph.successors(n).forEach(m ->
+					incrementChildren(graph, dependencyCount, m, val + 1));
+		}
+	}
+
+	public static <T> List<List<T>> topologicalGroupSort(Graph<T> graph)
+	{
+		final Set<T> root = graph.nodes().stream()
+				.filter(node -> graph.inDegree(node) == 0)
+				.collect(Collectors.toSet());
+		final Map<T, Integer> dependencyCount = new HashMap<>();
+
+		root.forEach(n -> dependencyCount.put(n, 0));
+		root.forEach(n -> graph.successors(n)
+				.forEach(m -> incrementChildren(graph, dependencyCount, m, dependencyCount.get(n) + 1)));
+
+		// create list<list> dependency grouping
+		final List<List<T>> dependencyGroups = new ArrayList<>();
+		final int[] curGroup = {-1};
+
+		dependencyCount.entrySet().stream()
+				.sorted(Map.Entry.comparingByValue())
+				.forEach(entry ->
+				{
+					if (entry.getValue() != curGroup[0])
+					{
+						curGroup[0] = entry.getValue();
+						dependencyGroups.add(new ArrayList<>());
+					}
+					dependencyGroups.get(dependencyGroups.size() - 1).add(entry.getKey());
+				});
+
+		return dependencyGroups;
 	}
 
 	public Config getPluginConfigProxy(Plugin plugin)

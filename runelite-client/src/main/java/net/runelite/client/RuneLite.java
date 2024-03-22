@@ -31,6 +31,7 @@ import com.google.common.base.MoreObjects;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.openosrs.client.OpenOSRS;
 import java.applet.Applet;
 import java.io.File;
 import java.io.IOException;
@@ -91,6 +92,7 @@ import net.runelite.client.ui.overlay.worldmap.WorldMapOverlay;
 import net.runelite.client.util.OSType;
 import net.runelite.client.util.ReflectUtil;
 import net.runelite.http.api.RuneLiteAPI;
+import net.runelite.client.plugins.OPRSExternalPluginManager;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -116,6 +118,9 @@ public class RuneLite
 
 	@Inject
 	private PluginManager pluginManager;
+
+	@Inject
+	private OPRSExternalPluginManager oprsExternalPluginManager;
 
 	@Inject
 	private ExternalPluginManager externalPluginManager;
@@ -339,6 +344,15 @@ public class RuneLite
 
 		// Tell the plugin manager if client is outdated or not
 		pluginManager.setOutdated(isOutdated);
+
+		// Load external plugin manager
+		oprsExternalPluginManager.setupInstance();
+		oprsExternalPluginManager.startExternalUpdateManager();
+		oprsExternalPluginManager.startExternalPluginManager();
+		oprsExternalPluginManager.setOutdated(isOutdated);
+
+		// Update external plugins
+		oprsExternalPluginManager.update();
 
 		// Update check requires ConfigManager to be ready before it runs
 		Updater updater = injector.getInstance(Updater.class);
