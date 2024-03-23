@@ -362,6 +362,9 @@ public class RuneLite
 		// This will initialize configuration
 		pluginManager.loadCorePlugins();
 		pluginManager.loadSideLoadPlugins();
+
+		oprsExternalPluginManager.loadPlugins();
+
 		externalPluginManager.loadExternalPlugins();
 
 		SplashScreen.stage(.70, null, "Finalizing configuration");
