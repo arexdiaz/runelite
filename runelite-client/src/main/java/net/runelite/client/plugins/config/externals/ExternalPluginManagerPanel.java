@@ -1,4 +1,4 @@
-package net.runelite.client.plugins.openosrs.externals;
+package net.runelite.client.plugins.config.externals;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -20,7 +20,6 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.client.config.Config;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.plugins.OPRSExternalPluginManager;
 import net.runelite.client.ui.*;

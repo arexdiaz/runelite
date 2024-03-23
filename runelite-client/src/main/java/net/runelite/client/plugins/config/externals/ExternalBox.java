@@ -1,4 +1,4 @@
-package net.runelite.client.plugins.openosrs.externals;
+package net.runelite.client.plugins.config.externals;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

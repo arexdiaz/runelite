@@ -1,4 +1,4 @@
-package net.runelite.client.plugins.openosrs.externals;
+package net.runelite.client.plugins.config.externals;
 
 import net.runelite.client.plugins.OPRSExternalPluginManager;
 import com.google.gson.JsonSyntaxException;
