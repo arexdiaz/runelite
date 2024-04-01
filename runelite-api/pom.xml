@@ -29,17 +29,13 @@
 	<parent>
 		<groupId>net.runelite</groupId>
 		<artifactId>runelite-parent</artifactId>
-		<version>1.10.25</version>
+		<version>1.10.27-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>runelite-api</artifactId>
 	<name>RuneLite API</name>
 
 	<dependencies>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
