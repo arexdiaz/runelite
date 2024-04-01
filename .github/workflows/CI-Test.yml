@@ -41,7 +41,7 @@ jobs:
         run: echo "::set-output name=ARTIFACT_NAME::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)"
 
       - name: Build
-        run: mvn clean install -DskipTests
+        run: mvn clean install
 
       - name: Release
         uses: actions/upload-release-asset@v1
