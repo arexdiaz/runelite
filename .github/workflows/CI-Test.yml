@@ -54,6 +54,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./target/client-${{ steps.artifact.outputs.ARTIFACT_NAME }}-shaded.jar
+          asset_path: ./runelite-client/target/client-${{ steps.artifact.outputs.ARTIFACT_NAME }}-shaded.jar
           asset_name: client-${{ steps.artifact.outputs.ARTIFACT_NAME }}-shaded.jar
           asset_content_type: application/java-archive
