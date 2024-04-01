@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     permissions:
-      contents: read
+      contents: write
 
     steps:
       - name: Checkout
@@ -54,6 +54,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./target/${{ steps.artifact.outputs.ARTIFACT_NAME }}.jar
-          asset_name: ${{ steps.artifact.outputs.ARTIFACT_NAME }}.jar
+          asset_path: ./target/client-${{ steps.artifact.outputs.ARTIFACT_NAME }}-shaded.jar
+          asset_name: client-${{ steps.artifact.outputs.ARTIFACT_NAME }}-shaded.jar
           asset_content_type: application/java-archive
