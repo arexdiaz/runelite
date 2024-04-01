@@ -38,12 +38,12 @@ jobs:
 
       - name: Release-Test
         id: create_release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.artifact.outputs.ARTIFACT_NAME }}
-          release_name: Release ${{ steps.artifact.outputs.ARTIFACT_NAME }}
+          name: Release ${{ steps.artifact.outputs.ARTIFACT_NAME }}
           draft: false
           prerelease: false
 
