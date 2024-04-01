@@ -36,12 +36,24 @@ jobs:
       - name: Build
         run: mvn clean install -DskipTests
 
-      - name: Release
+      - name: Release-Test
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.artifact.outputs.ARTIFACT_NAME }}
+          release_name: Release ${{ steps.artifact.outputs.ARTIFACT_NAME }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset 
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_name: client-${{ steps.artifact.outputs.ARTIFACT_NAME }}-shaded.jar
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./target/${{ steps.artifact.outputs.ARTIFACT_NAME }}.jar
+          asset_name: ${{ steps.artifact.outputs.ARTIFACT_NAME }}.jar
           asset_content_type: application/java-archive
-          asset_path: ./target/client-${{ steps.artifact.outputs.ARTIFACT_NAME }}-shaded.jar
