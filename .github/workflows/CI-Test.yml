@@ -46,6 +46,12 @@ jobs:
           draft: false
           prerelease: false
 
+      - name: Print values
+        run: |
+          echo "Upload URL: ${{ steps.create_release.outputs.upload_url }}"
+          echo "Asset Path: ./runelite-client/target/client-${{ steps.artifact.outputs.ARTIFACT_NAME }}-shaded.jar"
+          echo "Asset Name: client-${{ steps.artifact.outputs.ARTIFACT_NAME }}-shaded.jar"
+
       - name: Upload Release Asset
         id: upload-release-asset 
         uses: actions/upload-release-asset@v1
