@@ -61,4 +61,3 @@ jobs:
           asset_path: ./runelite-client/target/client-${{ steps.artifact.outputs.ARTIFACT_NAME }}-shaded.jar
           asset_name: client-${{ steps.artifact.outputs.ARTIFACT_NAME }}-shaded.jar
           asset_content_type: application/java-archive
-
