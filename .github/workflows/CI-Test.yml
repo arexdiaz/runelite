@@ -34,7 +34,7 @@ jobs:
 
       - name: Extract artifact name
         id: artifact
-        run: echo "::set-output name=ARTIFACT_NAME::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)-$(date +%s)"
+        run: echo "::set-output name=ARTIFACT_NAME::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)"
 
       - name: Release-Test
         id: create_release
