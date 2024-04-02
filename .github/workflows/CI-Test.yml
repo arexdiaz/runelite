@@ -3,7 +3,6 @@ name: CI (No rule set)
 on:
   push:
   pull_request:
-  workflow_dispatch:
   release:
     types: [created]
 
