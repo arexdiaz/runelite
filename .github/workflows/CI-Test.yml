@@ -38,7 +38,7 @@ jobs:
 
       - name: Get timestamp
         id: timestamp
-        run: echo "::set-output name=timestamp::$(date +'%Y%m%d%H')"
+        run: echo "::set-output name=timestamp::$(date +'%Y%m%d%H%M')"
 
       - name: Release-Test
         id: create_release
