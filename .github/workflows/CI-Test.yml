@@ -3,7 +3,6 @@ name: CI (No rule set)
 on:
   push:
   pull_request:
-  workflow_dispatch:
   release:
     types: [created]
 
@@ -26,31 +25,34 @@ jobs:
           distribution: temurin
           java-version: 11
 
+      - name: Extract artifact name
+        id: artifact
+        run: echo "::set-output name=ARTIFACT_NAME::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)"
+
+      - name: Print dependency tree
+        run: mvn dependency:tree
+
       - name: Build
         run: mvn clean install -DskipTests
 
-      - name: Extract artifact name
-        id: artifact
-        run: echo "::set-output name=ARTIFACT_NAME::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)-$(date +%s)"
-
       - name: Release-Test
         id: create_release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.artifact.outputs.ARTIFACT_NAME }}
-          release_name: Release ${{ steps.artifact.outputs.ARTIFACT_NAME }}
+          name: Release ${{ steps.artifact.outputs.ARTIFACT_NAME }}
           draft: false
           prerelease: false
 
       - name: Upload Release Asset
-        id: upload-release-asset
+        id: upload-release-asset 
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./runelite-client/target/client-${{ steps.artifact.outputs.ARTIFACT_NAME }}-shaded.jar
+          asset_path: ./runelite-client/target/client-${project.version}-shaded.jar
           asset_name: client-${{ steps.artifact.outputs.ARTIFACT_NAME }}-shaded.jar
           asset_content_type: application/java-archive
