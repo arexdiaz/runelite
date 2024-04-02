@@ -3,6 +3,7 @@ name: CI (No rule set)
 on:
   push:
   pull_request:
+  workflow_dispatch:
   release:
     types: [created]
 
@@ -25,54 +26,31 @@ jobs:
           distribution: temurin
           java-version: 11
 
-      - name: Extract artifact name
-        id: artifact
-        run: echo "::set-output name=ARTIFACT_NAME::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)"
-
-      - name: Print dependency tree
-        run: mvn dependency:tree
-
       - name: Build
         run: mvn clean install -DskipTests
 
+      - name: Extract artifact name
+        id: artifact
+        run: echo "::set-output name=ARTIFACT_NAME::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)-$(date +%s)"
+
       - name: Release-Test
         id: create_release
-        uses: softprops/action-gh-release@v1
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.artifact.outputs.ARTIFACT_NAME }}
-          name: Release ${{ steps.artifact.outputs.ARTIFACT_NAME }}
+          release_name: Release ${{ steps.artifact.outputs.ARTIFACT_NAME }}
           draft: false
           prerelease: false
 
-      - name: Get Release ID
-        id: get_release_id
-        run: |
-          RELEASE_ID=$(curl --silent "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/tags/$TAG_NAME" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            | jq '.id')
-          echo "::set-output name=release_id::$RELEASE_ID"
-
-      - name: Get Asset ID
-        id: get_asset_id
-        run: |
-          ASSET_ID=$(curl --silent "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/${{ steps.get_release_id.outputs.release_id }}/assets" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            | jq '.[] | select(.name=="client-1.10.27-SNAPSHOT-shaded.jar") | .id')
-          echo "::set-output name=asset_id::$ASSET_ID"
-
-      - name: Delete Asset
-        run: |
-          curl --silent -X DELETE "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/assets/${{ steps.get_asset_id.outputs.asset_id }}" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}"
-
       - name: Upload Release Asset
+        id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./runelite-client/target/client-1.10.27-SNAPSHOT-shaded.jar
-          asset_name: client-1.10.27-SNAPSHOT-shaded.jar
+          asset_path: ./runelite-client/target/client-${{ steps.artifact.outputs.ARTIFACT_NAME }}-shaded.jar
+          asset_name: client-${{ steps.artifact.outputs.ARTIFACT_NAME }}-shaded.jar
           asset_content_type: application/java-archive
