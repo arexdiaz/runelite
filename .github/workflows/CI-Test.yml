@@ -26,15 +26,15 @@ jobs:
           distribution: temurin
           java-version: 11
 
-      - name: Extract artifact name
-        id: artifact
-        run: echo "::set-output name=ARTIFACT_NAME::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)"
-
       - name: Print dependency tree
         run: mvn dependency:tree
 
       - name: Build
         run: mvn clean install -DskipTests
+
+      - name: Extract artifact name
+        id: artifact
+        run: echo "::set-output name=ARTIFACT_NAME::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)-$(date +%s)"
 
       - name: Release-Test
         id: create_release
