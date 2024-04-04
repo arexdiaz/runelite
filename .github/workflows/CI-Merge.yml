@@ -2,6 +2,7 @@ name: CI Merge
 
 on:
   dispatch:
+
   schedule:
     - cron:  '0 7 * * *'
 
