@@ -39,6 +39,7 @@ import net.runelite.client.ui.PluginPanel;
 import net.runelite.client.ui.components.materialtabs.MaterialTab;
 import net.runelite.client.ui.components.materialtabs.MaterialTabGroup;
 import net.runelite.client.util.ImageUtil;
+import net.runelite.client.plugins.config.externals.ExternalPluginManagerPanel;
 
 @Singleton
 class TopLevelConfigPanel extends PluginPanel
@@ -60,7 +61,8 @@ class TopLevelConfigPanel extends PluginPanel
 		EventBus eventBus,
 		PluginListPanel pluginListPanel,
 		ProfilePanel profilePanel,
-		Provider<PluginHubPanel> pluginHubPanelProvider
+		Provider<PluginHubPanel> pluginHubPanelProvider,
+		ExternalPluginManagerPanel ExternalPluginManagerPanel
 	)
 	{
 		super(false);
@@ -85,6 +87,8 @@ class TopLevelConfigPanel extends PluginPanel
 		addTab(profilePanel, "profile_icon.png", "Profiles");
 
 		addTab(pluginHubPanelProvider, "plugin_hub_icon.png", "Plugin Hub");
+
+		addTab(ExternalPluginManagerPanel, "externalmanager_icon.png", "External Plugin Manager");
 
 		tabGroup.select(pluginListPanelTab);
 	}

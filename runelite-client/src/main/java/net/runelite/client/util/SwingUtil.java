@@ -33,6 +33,7 @@ import java.awt.Toolkit;
 import javax.annotation.Nullable;
 import javax.swing.AbstractButton;
 import javax.swing.SwingUtilities;
+import java.lang.reflect.InvocationTargetException;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.client.ui.Activatable;
 
@@ -130,6 +131,18 @@ public class SwingUtil
 			{
 				log.warn("uncaught exception in deactivate", e);
 			}
+		}
+	}
+
+	public static void syncExec(final Runnable r) throws InvocationTargetException, InterruptedException
+	{
+		if (EventQueue.isDispatchThread())
+		{
+			r.run();
+		}
+		else
+		{
+			EventQueue.invokeAndWait(r);
 		}
 	}
 }
