@@ -31,6 +31,8 @@ import java.awt.Color;
  */
 public class ColorScheme
 {
+	public static final Color BRAND_BLUE = new Color(25, 194, 255);
+	public static final Color BRAND_BLUE_TRANSPARENT = new Color(25, 194, 255, 120);
 	/* The orange color used for the branding's accents */
 	public static final Color BRAND_ORANGE = new Color(220, 138, 0);
 

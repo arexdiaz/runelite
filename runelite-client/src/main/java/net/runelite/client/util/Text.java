@@ -40,7 +40,7 @@ import org.apache.commons.text.similarity.JaroWinklerDistance;
  */
 public class Text
 {
-	private static final JaroWinklerDistance DISTANCE = new JaroWinklerDistance();
+	public static final JaroWinklerDistance DISTANCE = new JaroWinklerDistance();
 	private static final Pattern TAG_REGEXP = Pattern.compile("<[^>]*>");
 	private static final Splitter COMMA_SPLITTER = Splitter
 		.on(",")

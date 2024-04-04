@@ -51,7 +51,7 @@ public class HiscoreClient
 	private final Gson gson;
 
 	@Inject
-	private HiscoreClient(OkHttpClient client, Gson gson)
+	public HiscoreClient(OkHttpClient client, Gson gson)
 	{
 		this.client = client;
 		this.gson = gson;
