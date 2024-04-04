@@ -18,6 +18,7 @@ jobs:
         run: |
           git config --global user.name 'arexdiaz'
           git config --global user.email 'arexito@icloud.com'
+          git config pull.rebase false
 
       - name: Sync Fork
         run: |
