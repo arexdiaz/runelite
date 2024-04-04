@@ -2,11 +2,12 @@ name: CI (No rule set)
 
 on:
   push:
+    branches:
+    - master
   pull_request:
   workflow_dispatch:
   release:
     types: [created]
-
 jobs:
   build:
     runs-on: ubuntu-20.04
