@@ -1,4 +1,4 @@
-name: CI Merge
+name: Sync Fork
 
 on:
   schedule:
@@ -10,42 +10,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Sync Fork
+        uses: repo-sync/github-sync@v2
         with:
-          ref: master
-
-      - name: Setup Git
-        run: |
-          git config --global user.name 'arexdiaz'
-          git config --global user.email 'arexito@icloud.com'
-
-      - name: Check if fork is up-to-date
-        id: check
-        run: |
-          git fetch upstream
-          UPSTREAM=${1:-'@{u}'}
-          LOCAL=$(git rev-parse @)
-          REMOTE=$(git rev-parse "$UPSTREAM")
-          BASE=$(git merge-base @ "$UPSTREAM")
-          
-          if [ $LOCAL = $REMOTE ]; then
-              echo "Up-to-date"
-              echo "::set-output name=status::up-to-date"
-          elif [ $LOCAL = $BASE ]; then
-              echo "Need to pull"
-              echo "::set-output name=status::behind"
-          else
-              echo "Diverged"
-              echo "::set-output name=status::diverged"
-          fi
-
-      - name: Stop if up-to-date
-        run: exit 1
-        if: steps.check.outputs.status == 'up-to-date'
-
-      - name: Sync Fork and Merge
-        run: |
-          git fetch upstream
-          git pull upstream master
-          git checkout -b patched-runelite
-          git merge master
-          git push origin patched-runelite
+          source_repo: 'runelite/runelite'
+          source_branch: 'master'
+          destination_branch: 'master'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
