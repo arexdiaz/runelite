@@ -24,5 +24,6 @@ jobs:
         run: |
           git remote add upstream https://github.com/runelite/runelite.git
           git fetch upstream
-          git merge --allow-unrelated-histories upstream/master
-          git push origin master
+          git checkout -b upstream-main upstream/main
+          git merge main
+          git push origin main
