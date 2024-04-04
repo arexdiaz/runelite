@@ -22,8 +22,18 @@ jobs:
 
       - name: Sync Fork
         run: |
+          # "git checkout master" is unnecessary, already here by default
+          git pull --unshallow
+
           git remote add upstream https://github.com/runelite/runelite.git
           git fetch upstream
-          git checkout -b upstream-main upstream/main
-          git merge main
-          git push origin main
+
+          # Neither forget the -b opt,
+          # the feature/x ref is ambiguous at this stage
+          git checkout -b feature/x origin/feature/x
+          git merge --no-edit upstream/feature/x
+          git push origin feature/x
+
+          git checkout master
+          git merge --no-edit upstream/master
+          git push origin master
