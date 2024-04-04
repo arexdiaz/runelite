@@ -1,0 +1,63 @@
+name: CI (No rule set)
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 11
+
+      - name: Print dependency tree
+        run: mvn dependency:tree
+
+      - name: Build
+        run: mvn clean install -DskipTests
+
+      - name: Extract artifact name
+        id: artifact
+        run: echo "::set-output name=ARTIFACT_NAME::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)"
+
+      - name: Get timestamp
+        id: timestamp
+        run: echo "::set-output name=timestamp::$(date +'%Y%m%d%H%M')"
+
+      - name: Release-Test
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.timestamp.outputs.timestamp }}
+          release_name: Release ${{ steps.artifact.outputs.ARTIFACT_NAME }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./runelite-client/target/client-${{ steps.artifact.outputs.ARTIFACT_NAME }}-shaded.jar
+          asset_name: client-${{ steps.artifact.outputs.ARTIFACT_NAME }}-shaded.jar
+          asset_content_type: application/java-archive
